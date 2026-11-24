@@ -9,7 +9,7 @@ import { updateHistory } from '../history/index.js';
  * @param {Context} context
  * @returns {boolean}
  */
-const check = (context) => context.hasCommand(COMMAND_SYS_DEPLOY);
+const check = (context) => context.isAdmin && context.hasCommand(COMMAND_SYS_DEPLOY);
 
 /**
  * @param {Context} context
@@ -30,3 +30,5 @@ const exec = (context) => check(context) && (
 )();
 
 export default exec;
+
+export { check };

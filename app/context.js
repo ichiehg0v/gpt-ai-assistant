@@ -13,7 +13,7 @@ import {
   fetchUser,
   generateTranscription,
 } from '../utils/index.js';
-import { Command, COMMAND_BOT_RETRY } from './commands/index.js';
+import { Command, COMMAND_BOT_RETRY, COMMAND_SYS_DEPLOY } from './commands/index.js';
 import { updateHistory } from './history/index.js';
 import {
   ImageMessage, Message, TemplateMessage, TextMessage,
@@ -74,6 +74,14 @@ class Context {
    */
   get userId() {
     return this.event.userId;
+  }
+
+  get isAdmin() {
+    return config.APP_ADMIN_USER_IDS.includes(this.userId);
+  }
+
+  filterAuthorizedActions(actions = []) {
+    return actions.filter((action) => action !== COMMAND_SYS_DEPLOY || this.isAdmin);
   }
 
   /**
@@ -195,7 +203,7 @@ class Context {
       type: MESSAGE_TYPE_TEXT,
       text: convertText(text),
     });
-    message.setQuickReply(actions);
+    message.setQuickReply(this.filterAuthorizedActions(actions));
     this.messages.push(message);
     return this;
   }
@@ -212,7 +220,7 @@ class Context {
       originalContentUrl: url,
       previewImageUrl: url,
     });
-    message.setQuickReply(actions);
+    message.setQuickReply(this.filterAuthorizedActions(actions));
     this.messages.push(message);
     return this;
   }
@@ -227,9 +235,9 @@ class Context {
     if (!text) return this;
     const message = new TemplateMessage({
       text,
-      actions: buttons,
+      actions: this.filterAuthorizedActions(buttons),
     });
-    message.setQuickReply(actions);
+    message.setQuickReply(this.filterAuthorizedActions(actions));
     this.messages.push(message);
     return this;
   }
