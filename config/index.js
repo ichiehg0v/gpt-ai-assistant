@@ -18,6 +18,9 @@ const config = Object.freeze({
   APP_MAX_USERS: Number(env.APP_MAX_USERS) || 5,
   APP_MAX_PROMPT_MESSAGES: Number(env.APP_MAX_PROMPT_MESSAGES) || 12,
   APP_MAX_PROMPT_TOKENS: Number(env.APP_MAX_PROMPT_TOKENS) || 1024,
+  APP_ADMIN_USER_IDS: Object.freeze(
+    (env.APP_ADMIN_USER_IDS || '').split(',').map((id) => id.trim()).filter(Boolean),
+  ),
   HUMAN_NAME: env.HUMAN_NAME || '',
   HUMAN_INIT_PROMPT: env.HUMAN_INIT_PROMPT || '',
   BOT_NAME: env.BOT_NAME || 'AI',
